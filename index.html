@@ -233,52 +233,136 @@
         color: var(--navy);
       }
 
-      .flow {
+      .flow-board {
+        flex: 1;
         display: flex;
-        align-items: stretch;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 8px;
+        flex-direction: column;
+        gap: 14px;
+        min-height: 0;
       }
 
-      .flow .node {
+      .flow-lane-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--num);
+        margin-bottom: 6px;
+      }
+
+      .flow-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        position: relative;
+      }
+
+      .flow-row.inputs {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 78%;
+      }
+
+      .flow-step {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 6px;
-        padding: 12px 10px;
-        min-width: 108px;
-        flex: 1;
-        text-align: center;
+        padding: 14px 14px 12px;
+        position: relative;
+        min-height: 78px;
       }
 
-      .flow .node.ext {
+      .flow-step.ext {
         background: var(--teal);
         border-color: var(--teal);
         color: #fff;
       }
 
-      .flow .node.ext small {
-        color: #c5d4d9;
+      .flow-step .num {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--num);
+        margin-bottom: 6px;
       }
 
-      .flow .node strong {
+      .flow-step.ext .num {
+        color: #a8c0c8;
+      }
+
+      .flow-step strong {
         display: block;
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
         margin-bottom: 4px;
       }
 
-      .flow .node small {
+      .flow-step small {
         display: block;
-        font-size: 11px;
+        font-size: 12px;
+        line-height: 1.35;
         color: #6a7a84;
       }
 
-      .flow .arrow {
-        align-self: center;
+      .flow-step.ext small {
+        color: #c5d4d9;
+      }
+
+      .flow-chain {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      .flow-chain .flow-step {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .flow-arrow {
+        flex: 0 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: var(--num);
-        font-size: 18px;
-        flex: 0 0 auto;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .flow-merge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 2px 0;
+      }
+
+      .flow-merge .line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .flow-merge .badge {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--num);
+        white-space: nowrap;
+      }
+
+      .flow-feeds {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 16px;
+        font-size: 12px;
+        color: #6a7a84;
+        margin-top: 2px;
+      }
+
+      .flow-feeds strong {
+        color: var(--navy);
+        font-weight: 600;
       }
 
       .light .foot {
@@ -544,47 +628,82 @@
         <!-- 6 Flow -->
         <section class="slide light" data-slide="6">
           <h2>End-to-end flow</h2>
-          <p class="lead">
-            PMS data and credentials feed the loop. Zuub returns portal
-            benefits. Eligibility is calculated as an estimate. Results show in
-            the schedule UI.
-          </p>
-          <div class="flow">
-            <div class="node ext">
-              <strong>PMS sync</strong><small>connector or API</small>
+          <div class="flow-board">
+            <div>
+              <div class="flow-lane-label">Inputs</div>
+              <div class="flow-chain">
+                <div class="flow-step ext">
+                  <div class="num">A</div>
+                  <strong>PMS data</strong>
+                  <small>Connector or API → appts &amp; insurance</small>
+                </div>
+                <div class="flow-arrow" aria-hidden="true"></div>
+                <div class="flow-step">
+                  <div class="num">B</div>
+                  <strong>Portal credentials</strong>
+                  <small>Setup + validate in Zuub vault</small>
+                </div>
+                <div class="flow-arrow" aria-hidden="true"></div>
+                <div class="flow-step">
+                  <div class="num">C</div>
+                  <strong>Insurance edits</strong>
+                  <small>Change detect every 15 min</small>
+                </div>
+              </div>
+              <div class="flow-feeds">
+                <div><strong>A + C</strong> feed step 01</div>
+                <div><strong>B</strong> feeds step 02</div>
+              </div>
             </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Normalized data</strong><small>appts + insurance</small>
+
+            <div class="flow-merge">
+              <div class="line"></div>
+              <div class="badge">Check loop</div>
+              <div class="line"></div>
             </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Need a check?</strong><small>every 15 min</small>
+
+            <div class="flow-chain">
+              <div class="flow-step">
+                <div class="num">01</div>
+                <strong>Need a check?</strong>
+                <small>Horizon sweep · every 15 min</small>
+              </div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step">
+                <div class="num">02</div>
+                <strong>Build request</strong>
+                <small>PMS + creds · every 1 min</small>
+              </div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step ext">
+                <div class="num">03</div>
+                <strong>Zuub</strong>
+                <small>Sync or async portal / payer</small>
+              </div>
             </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Build request</strong><small>+ creds · every 1 min</small>
-            </div>
-            <div class="arrow">→</div>
-            <div class="node ext">
-              <strong>Zuub</strong><small>sync or async</small>
-            </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Store benefits</strong><small>from portal</small>
-            </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Eligibility</strong><small>estimate</small>
-            </div>
-            <div class="arrow">→</div>
-            <div class="node">
-              <strong>Schedule UI</strong><small>team view</small>
+
+            <div class="flow-chain">
+              <div class="flow-step">
+                <div class="num">04</div>
+                <strong>Store benefits</strong>
+                <small>Portal payload in Nucleus</small>
+              </div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step">
+                <div class="num">05</div>
+                <strong>Eligibility calc</strong>
+                <small>Estimate from portal data</small>
+              </div>
+              <div class="flow-arrow" aria-hidden="true">→</div>
+              <div class="flow-step">
+                <div class="num">06</div>
+                <strong>Schedule UI</strong>
+                <small>Benefits + estimate for the team</small>
+              </div>
             </div>
           </div>
-          <div class="foot" style="margin-top: 28px">
-            Teal = external (PMS / Zuub) · White = Nucleus / AutoVerify ·
-            Insurance edits also feed “Need a check?”
+          <div class="foot">
+            Teal = external (PMS / Zuub) · White = Nucleus / AutoVerify
           </div>
         </section>
 
