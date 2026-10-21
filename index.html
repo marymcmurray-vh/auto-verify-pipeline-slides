@@ -412,11 +412,12 @@
               </p>
             </div>
             <div class="card">
-              <h3>PMS connector</h3>
+              <h3>PMS data ingest</h3>
               <p>
-                Syncs appointments, patients, and insurance into Videa on the
-                practice’s connector schedule. AutoVerify does not scrape the
-                PMS itself.
+                Appointments, patients, and insurance land in Videa via the
+                practice’s integration — often a connector, sometimes a direct
+                API. AutoVerify reads the normalized data; it does not scrape
+                the PMS itself.
               </p>
             </div>
             <div class="card">
@@ -536,17 +537,6 @@
                 >
               </div>
             </div>
-            <div class="row">
-              <div class="n">05</div>
-              <div class="body">
-                <strong>Legacy daily batch · 07:00 UTC (if enabled)</strong>
-                <span
-                  >Older path for practices still on the daily extractor. Can
-                  re-run after insurance pull only when request data
-                  changed.</span
-                >
-              </div>
-            </div>
           </div>
           <div class="foot">Videa · AutoVerify · Setup &amp; data pipeline</div>
         </section>
@@ -561,7 +551,7 @@
           </p>
           <div class="flow">
             <div class="node ext">
-              <strong>PMS sync</strong><small>connector</small>
+              <strong>PMS sync</strong><small>connector or API</small>
             </div>
             <div class="arrow">→</div>
             <div class="node">
@@ -697,9 +687,9 @@
               <ul>
                 <li>
                   Reads normalized appointments, patients, insurance after PMS
-                  sync
+                  data lands (connector and/or API, by practice)
                 </li>
-                <li>Connector cadence varies by practice</li>
+                <li>Ingest cadence varies by practice and integration type</li>
                 <li>
                   Post-norm insurance job every 15 min can re-trigger when
                   insurance rows change
@@ -722,7 +712,6 @@
                 <li>PMS-change lookback: ~60 min</li>
                 <li>PMS-change lookahead: up to ~90 days</li>
                 <li>Credential re-validation: 06:00 &amp; 18:00 ET</li>
-                <li>Legacy daily extractor: 07:00 UTC (if enabled)</li>
               </ul>
             </div>
           </div>
